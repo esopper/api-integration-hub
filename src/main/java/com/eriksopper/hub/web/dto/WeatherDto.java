@@ -24,10 +24,10 @@ public class WeatherDto {
     @Setter
     public static class Day {
         private long dt;
-        private double min;
-        private double max;
-        private double feelsLikeMin;
-        private double feelsLikeMax;
+        private double eve;
+        private double day;
+        private double feelsLikeEve;
+        private double feelsLikeDay;
         private String description;
         private String icon;
         private String summary;

@@ -62,10 +62,10 @@ public class WeatherMapperTest {
 
         assertThat(dto.getForecast()).isNotNull();
         assertThat(dto.getForecast().get(0).getDt()).isEqualTo(54321);
-        assertThat(dto.getForecast().get(0).getMax()).isEqualTo(34.1);
-        assertThat(dto.getForecast().get(0).getMin()).isEqualTo(31.3);
-        assertThat(dto.getForecast().get(0).getFeelsLikeMax()).isEqualTo(29.6);
-        assertThat(dto.getForecast().get(0).getFeelsLikeMin()).isEqualTo(21.9);
+        assertThat(dto.getForecast().get(0).getDay()).isEqualTo(34.1);
+        assertThat(dto.getForecast().get(0).getEve()).isEqualTo(31.3);
+        assertThat(dto.getForecast().get(0).getFeelsLikeDay()).isEqualTo(29.6);
+        assertThat(dto.getForecast().get(0).getFeelsLikeEve()).isEqualTo(21.9);
         assertThat(dto.getForecast().get(0).getDescription()).isEqualTo("sunny");
         assertThat(dto.getForecast().get(0).getIcon()).isEqualTo("dayIcon.jpg");
         assertThat(dto.getForecast().get(0).getSummary()).isEqualTo("summary");
@@ -124,10 +124,10 @@ public class WeatherMapperTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getForecast()).isNotEmpty();
-        assertThat(dto.getForecast().get(0).getMin()).isEqualTo(0);
-        assertThat(dto.getForecast().get(0).getMax()).isEqualTo(0);
-        assertThat(dto.getForecast().get(0).getFeelsLikeMin()).isEqualTo(0);
-        assertThat(dto.getForecast().get(0).getFeelsLikeMax()).isEqualTo(0);
+        assertThat(dto.getForecast().get(0).getEve()).isEqualTo(0);
+        assertThat(dto.getForecast().get(0).getDay()).isEqualTo(0);
+        assertThat(dto.getForecast().get(0).getFeelsLikeEve()).isEqualTo(0);
+        assertThat(dto.getForecast().get(0).getFeelsLikeDay()).isEqualTo(0);
     }
 
     @Test

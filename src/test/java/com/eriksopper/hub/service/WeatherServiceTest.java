@@ -2,6 +2,7 @@ package com.eriksopper.hub.service;
 
 import com.eriksopper.hub.integrations.openweather.client.OpenWeatherClient;
 import com.eriksopper.hub.integrations.openweather.dto.OpenWeatherResponse;
+import com.eriksopper.hub.mapper.LocationMapper;
 import com.eriksopper.hub.mapper.WeatherMapper;
 import com.eriksopper.hub.web.dto.WeatherDto;
 import org.junit.jupiter.api.Test;
@@ -13,19 +14,20 @@ public class WeatherServiceTest {
     @Test
     public void search_delegatesToClientAndMapper() {
         OpenWeatherClient client = mock(OpenWeatherClient.class);
-        WeatherMapper mapper = mock(WeatherMapper.class);
-        WeatherService service = new WeatherService(client, mapper);
+        WeatherMapper weatherMapper = mock(WeatherMapper.class);
+        LocationMapper locationMapper = mock(LocationMapper.class);
+        WeatherService service = new WeatherService(client, weatherMapper, locationMapper);
 
         OpenWeatherResponse raw = new OpenWeatherResponse();
         WeatherDto mapped = new WeatherDto();
 
-        when(client.fetch(44.9, -93.1, "metric")).thenReturn(raw);
-        when(mapper.toDto(raw)).thenReturn(mapped);
+        when(client.fetchWeather(44.9, -93.1, "metric")).thenReturn(raw);
+        when(weatherMapper.toDto(raw)).thenReturn(mapped);
 
         WeatherDto dto = service.getWeather(44.9, -93.1, "metric");
 
-        verify(client).fetch(44.9, -93.1, "metric");
-        verify(mapper).toDto(raw);
+        verify(client).fetchWeather(44.9, -93.1, "metric");
+        verify(weatherMapper).toDto(raw);
         assertThat(dto).isSameAs(mapped);
     }
 }

@@ -1,7 +1,6 @@
 package com.eriksopper.hub.web.controller;
 
 import com.eriksopper.hub.service.WeatherService;
-import com.eriksopper.hub.web.dto.ApiResponse;
 import com.eriksopper.hub.web.dto.WeatherDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -28,7 +27,7 @@ class WeatherControllerTest {
         dto.setCurrent(now);
         dto.setForecast(Collections.emptyList());
 
-        when(service.getWeather(44.98, -93.26, "metric")).thenReturn(dto);
+        when(service.getWeather(44.98, -93.26, "imperial")).thenReturn(dto);
 
         MockMvc mvc = standaloneSetup(controller).build();
 
@@ -37,11 +36,11 @@ class WeatherControllerTest {
                         .param("lon", "-93.26")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))     // NOTE: after you fix ApiResponse.error to success=false for errors, this remains true for OK.
+                .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.current.temp").value(12.3))
                 .andExpect(jsonPath("$.data.forecast").isArray());
 
-        verify(service).getWeather(44.98, -93.26, "metric");
+        verify(service).getWeather(44.98, -93.26, "imperial");
         verifyNoMoreInteractions(service);
     }
 }

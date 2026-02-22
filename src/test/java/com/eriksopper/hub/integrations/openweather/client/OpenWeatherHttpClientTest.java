@@ -15,7 +15,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 class OpenWeatherHttpClientTest {
 
     @Test
-    void fetch_buildsUrl_andMapsResponse() {
+    void fetch_Weather_buildsUrl_andMapsResponse() {
         RestTemplate rest = new RestTemplate();
         MockRestServiceServer server = MockRestServiceServer.createServer(rest);
         OpenWeatherHttpClient client = new OpenWeatherHttpClient(rest, "key123", "https://api.openweathermap.org");
@@ -32,14 +32,14 @@ class OpenWeatherHttpClientTest {
                         "{\"current\":{\"temp\":12.3},\"daily\":[]}",
                         MediaType.APPLICATION_JSON));
 
-        OpenWeatherResponse res = client.fetch(44.9, -93.1, "metric");
+        OpenWeatherResponse res = client.fetchWeather(44.9, -93.1, "metric");
         assertThat(res.getCurrent().getTemp()).isEqualTo(12.3);
 
         server.verify();
     }
 
     @Test
-    void fetch_mapsErrorToOpenWeatherUpstreamException() {
+    void fetch_Weather_mapsErrorToOpenWeatherUpstreamException() {
         RestTemplate rest = new RestTemplate();
         MockRestServiceServer server = MockRestServiceServer.createServer(rest);
         OpenWeatherHttpClient client = new OpenWeatherHttpClient(rest, "key123", "https://api.openweathermap.org");
@@ -49,7 +49,7 @@ class OpenWeatherHttpClientTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body("{\"cod\":503,\"message\":\"service down\"}"));
 
-        assertThatThrownBy(() -> client.fetch(0, 0, "metric"))
+        assertThatThrownBy(() -> client.fetchWeather(0, 0, "metric"))
                 .isInstanceOf(OpenWeatherUpstreamException.class)
                 .hasMessageContaining("OpenWeather");
 

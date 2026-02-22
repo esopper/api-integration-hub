@@ -44,10 +44,10 @@ public class WeatherMapper {
         WeatherDto.Day webDay = new WeatherDto.Day();
         webDay.setDt(externalDay.getDt());
         if (externalDay.getTemp() != null) {
-            webDay.setMax(externalDay.getTemp().getDay());
-            webDay.setMin(externalDay.getTemp().getEve());
-            webDay.setFeelsLikeMax(externalDay.getFeels_like().getDay());
-            webDay.setFeelsLikeMin(externalDay.getFeels_like().getEve());
+            webDay.setDay(externalDay.getTemp().getDay());
+            webDay.setEve(externalDay.getTemp().getEve());
+            webDay.setFeelsLikeDay(externalDay.getFeels_like().getDay());
+            webDay.setFeelsLikeEve(externalDay.getFeels_like().getEve());
         }
         webDay.setDescription((externalDay.getWeather() != null && !externalDay.getWeather().isEmpty())
                 ? externalDay.getWeather().get(0).getDescription() : "");
