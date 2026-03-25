@@ -64,7 +64,7 @@ tasks.register('generateElasticBeanstalkFiles') {
 		def dir = outputDir.get().asFile
 		dir.mkdirs()
 
-		new File(dir, 'Procfile').text = 'web: java -Dserver.port=$PORT -jar application.jar\n'
+		new File(dir, 'Procfile').text = 'web: java -jar application.jar\n'
 	}
 }
 
