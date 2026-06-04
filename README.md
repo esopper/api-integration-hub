@@ -19,19 +19,26 @@ This project emphasizes:
 - **Frontend (AWS Amplify)**  
   https://www.eriksopper.com
 
-- **Backend API (AWS Elastic Beanstalk + ALB + HTTPS)**  
+- **Backend API (AWS Lightsail + Nginx + HTTPS)**  
   https://api.eriksopper.com
 
-### Architecture overview
+### Current architecture
 
 - Angular frontend hosted on **AWS Amplify**
-- Spring Boot backend deployed via **AWS Elastic Beanstalk**
-- **Application Load Balancer (ALB)** handles incoming traffic
-- **TLS termination at the ALB** using AWS Certificate Manager (ACM)
-- Backend instances run behind the ALB over HTTP
+- Spring Boot backend running on an **AWS Lightsail** instance
+- **Nginx** handles TLS termination and reverse proxies to the Spring Boot process
+- **Let's Encrypt** certificate managed via Certbot
+- **Route 53** handles DNS for both frontend and backend
 - Environment variables used for configuration and secrets
+- `systemd` manages the Spring Boot process (restarts on crash, starts on boot)
 
-This setup demonstrates a production-style separation of concerns between frontend hosting and backend infrastructure, along with secure HTTPS handling and cloud-managed deployment.
+### Previous architecture and right-sizing decision
+
+The backend was originally deployed as a load-balanced **AWS Elastic Beanstalk** environment with an **Application Load Balancer**, **ACM-managed TLS termination**, and EC2 instances behind the ALB. This is a production-style setup appropriate for applications with variable traffic and high-availability requirements.
+
+For a low-traffic portfolio project, that architecture was overbuilt. The ALB alone costs roughly $20/month regardless of traffic, before EC2 costs. Migrating to Lightsail reduced the backend hosting cost by approximately $20–25/month while preserving the core AWS deployment story.
+
+The Lightsail setup demonstrates the same fundamentals — cloud-hosted Java API, HTTPS, DNS, environment-based configuration — with infrastructure right-sized to actual usage. The Beanstalk configuration and deployment tooling remain in the repository's git history as a record of the original setup.
 
 ## Current integrations
 
@@ -121,18 +128,14 @@ Unit and integration-style tests are both wired into the Gradle build.
 
 ## Deployment
 
-This backend is intended to be deployed as part of the portfolio site at **eriksopper.com**.
+This backend is deployed to **AWS Lightsail** and served via Nginx. The `deploy/` directory contains:
 
-### AWS Elastic Beanstalk
+- `api.service` — systemd unit file that manages the Spring Boot process
+- `api.nginx.conf` — Nginx reverse proxy config (Certbot modifies this in-place to add HTTPS)
+- `deploy.sh` — build and deploy script: `./deploy/deploy.sh <host>`
+- `app.env.example` — template for `/etc/app.env` on the server
 
-The backend is hosted on **AWS Elastic Beanstalk**. I chose Elastic Beanstalk for this stage of the project because it lets me demonstrate:
-
-- packaging and deploying a Java web application to AWS
-- environment-based configuration and secret injection
-- managed infrastructure for a production-style portfolio deployment
-- a path to future enhancements such as additional AWS services and database-backed features
-
-This complements the frontend, which is hosted separately on **AWS Amplify**.
+The server runs the Spring Boot JAR as a dedicated `api` system user. The `prod` Spring profile is active in production, which loads `application-prod.properties` and fetches secrets from **AWS Secrets Manager** at startup. No secrets are stored on the server.
 
 ## Why this project exists
 

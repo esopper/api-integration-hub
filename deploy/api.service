@@ -1,0 +1,16 @@
+[Unit]
+Description=API Integration Hub
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/app.env
+Environment=SPRING_PROFILES_ACTIVE=prod
+ExecStart=/usr/bin/java -jar /opt/api/application.jar
+Restart=always
+RestartSec=5
+User=api
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
